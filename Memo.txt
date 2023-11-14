@@ -1,0 +1,51 @@
+# 가상환경 
+  python -m venv [가상환경 이름]
+  [가상환경 이름]/Scripts/activate - 활성화
+  deactivate - 비활성화
+
+# 장고설치
+  pip install django
+
+# 장고 프로젝트 생성
+  django-admin startproject config . (해당 위치에 manage.py 설정)
+
+# 장고 슈퍼계정 생성
+  python manage.py createsuperuser
+
+# 장고 DB 마이그레이션
+  python manage.py makemigrations
+  python manage.py migrate
+
+# 장고 App 생성
+  python manage.py startapp [앱이름]
+
+# 앱을 생성하면 settings.py 에 INSTALLED_APPS 에 추가해줘야 한다.
+
+# INSTALLED_APPS = SYSTEM_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
+  3가지로 나누어서 관리하면 구분하기 쉽다.
+
+# TEMPLATES와 STATIC 설정
+
+# 장고 기본 User모델이 아닌 커스텀 User 모델을 만드려면
+  from django.contrib.auth.models import AbstractUser
+  모델 Class에 AbstractUser를 상속 받아야 한다.
+
+# 추가로 settings.py에 
+    # Custom User
+    AUTH_USER_MODEL = 'users.User' 추가해줘야 한다.
+
+# admin.py에 모델을 등록하는 방법
+    @admin.register(models.User)
+    class CustomUserAdmin(UserAdmin):
+        pass
+
+# 장고 기본 관리자페이지의 사용자어드민 기능을 가져오려면
+  UserAdmin을 상속 받아서 사용한다.
+  from django.contrib.auth.admin import UserAdmin
+
+# requirements.txt 는 해당 프로젝트를 위해 필요한 것들을 작성한다.
+  나중에 pip install -r requirements.txt 로 한 번에 설치가 가능하다.
+
+# gitHub / Git 을 통한 소스관리를 한다면 .gitignore 에 소스를 업로드 하지 않을것들을
+  추가하여 관리한다.
+
