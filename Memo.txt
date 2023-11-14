@@ -49,3 +49,23 @@
 # gitHub / Git 을 통한 소스관리를 한다면 .gitignore 에 소스를 업로드 하지 않을것들을
   추가하여 관리한다.
 
+# 우린 Class들을 가지고 있고, 그 Class들을 print 하려고 하면 못생겼어.
+  우리가 원한다면 저 Class 들이 어떤 식으로 생길지 설정할 수 있어.
+
+# blank = True 는 from에서 필드가 필수적이지 않게 해준다.
+
+# null = True 는 데이터베이스에서 필드가 null 값을 가질 수 있게해준다. 
+
+# Many to One / One to Many : 이 둘은 거의 비슷한데 어느 것에서부터 보느냐에 따라 다르다.
+  [Room1, Room2, Room3] => User1
+  User1 => [Room1, Room2, Room3]
+  
+# Many to Many
+[Amenity1, Amenity2, Amenity3] => [Room1, Room2, Room3]
+하나의 room은 하나의 owner만 가질 수 있었는데, 이 경우에는
+하나의 room이 여러 amenity를 가질 수 있다.  
+그리고 여러 amenity 들이 여러 room에서 사용할 수 있다.
+
+# auto_now : Object가 저장될 때마다 해당 필드를 현재 date로 설정.
+
+# auto_now_add : Django에 의해 처음 생성되었을 때 채워질 것이다. 
