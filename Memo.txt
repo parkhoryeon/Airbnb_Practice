@@ -97,3 +97,30 @@
 # django rest framework 설치
   pip install djangorestframework
   settings.py에 INSTALLED_APPS에 'rest_framework' 추가한다.
+
+# 새 room을 만드려면 인증이 되어야 한다. 그리고 내가 host 이어야 한다.
+  새로운 room을 만들 때 그 room이 어떤 카티고리인지도 알려줘야 한다.
+  어떤 amenity를 가지고 있는지도 알려줘야 한다.
+  그래서 우리는 serializer 간에 관계(relationship)을 어떻게 만드는지 배워야 한다.
+  model 간에 관계를 만든 것처럼 말이야.
+
+# 너가 room을 수정하고 싶을 경우, amenity를 하나 더 추가하거나 카테고리를 바꾸는 것처럼 room을 수정하고 싶을 때
+  우리는 이렇게 관계가 있는 걸 어떻게 수정해야하는지 배워야 한다.
+  당연히 주인이 아니면 room을 지우지 못하게 해야하기 때문에, 확인을 해야한다.
+
+# serializer.py에서 클래스안의 Meta 안에다가 depth = 1 을 하게되면 관계가 확장이된다.
+  예를 들어서 owner의 경우에는 확장되서 기존에는 owner의 id만 json으로 확인할 수 있었는데
+  확장이 되면서 owner의 모든 정보를 확인할 수 있다.
+
+# 하지만 문제점은, 대부분의 상황에서는 한 번에 이런 모든 데이터가 필요하지 않다는 것이다.
+  우리는 불필요한 정보를 보여주지 않고, 요청하는 데이터의 양에 대해 주의를 해야한다.  
+  내가 만들 UI에 따라서 달라진다.
+
+# dept = 1 의 문제점은 커스터마이즈할 수 없다는 것이다. 아무것도 설정할 수 없다.  
+
+# 그래서, 너만의 seralizer를 만들 수 있는 방법을 알려줄게
+  serializer를 확장하고 싶은데 모든 걸 다 보여주고 싶지 않을 때를 위해서 말이야.
+
+# 우리는 room을 나열할 때 사용하는 작은 seralizer를 만들 거고
+  room 하나만 볼 때 사용하는 큰 serializer를 만들거다.
+  그리고 어떻게 우리만의 관계성 serializer를 만들고 설정하는 배워볼 것이다.    
