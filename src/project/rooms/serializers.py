@@ -3,6 +3,8 @@ from .models import Amenity, Room
 from users.serializers import TinyUserSerializer
 from categories.serializers import CategorySerializer
 from reviews.serializers import ReviewSerializer
+from medias.serializers import PhotoSerializer
+from wishlists.models import Wishlist
 
 
 class AmenitySerializer(serializers.ModelSerializer):       
@@ -25,10 +27,12 @@ class RoomDetailSerializer(serializers.ModelSerializer):
     amenities = AmenitySerializer(read_only=True, many=True)
     category = CategorySerializer(read_only=True) 
     # review_set = ReviewSerializer(read_only=True, many=True) # 수만개의 리뷰를 가질 수 있기 때문에 좋은 생각이 아니다. 
+    photo_set = PhotoSerializer(many=True, read_only=True)
 
     # serializer에 필드를 추가.
     rating = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
+    is_liked = serializers.SerializerMethodField()
 
     def get_is_owner(self, room):
         # print('⭐ SELF.CONTEXT : ', self.context)
@@ -37,6 +41,10 @@ class RoomDetailSerializer(serializers.ModelSerializer):
 
     def get_rating(self, room):
         return room.rating()
+    
+    def get_is_liked(self, room):
+        request = self.context['request']
+        return Wishlist.objects.filter(user=request.user, rooms__pk=room.pk).exists()
 
     class Meta:
         model = Room
@@ -59,12 +67,12 @@ class RoomListSerializer(serializers.ModelSerializer):
 
     rating = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
+    photo_set = PhotoSerializer(many=True, read_only=True)
 
     def get_is_owner(self, room):
         # print('⭐ SELF.CONTEXT : ', self.context)
         request = self.context['request']
         return room.owner == request.user
-
 
     def get_rating(self, room):
         return room.rating()
@@ -79,5 +87,6 @@ class RoomListSerializer(serializers.ModelSerializer):
             "price",
             "rating",  # 메서드를 추가하면 표시할 필드에도 추가해줘야 한다.
             "is_owner",
+            "photo_set",
         )
         # depth = 1  # 관계 확장

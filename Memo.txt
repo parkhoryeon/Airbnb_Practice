@@ -212,3 +212,75 @@
 
 # 그래서 다음 영상에서 ID가 1인 방 만의 리뷰를 보기 위한 새로운 URL을 만들거야.
 
+# rooms/views.RoomReviews 
+  오직 방 리뷰만 가지고 있어. 우린 단지 방 리뷰만 로딩하고 있다고.
+  이전에 한 방법보다 더 나은 방법이야.
+  왜냐면 이전에는 우리가 리뷰들을 로딩했지만 유저들은 그 지점까지 스크롤을 내리지 않을 수도 있거든
+  이제 할 수 있는건, 방의 페이지를 만들고, 유저가 아래로 스크롤하면 그 때 리뷰를 요청할 수 있게 하는것이다.
+  유저가 리뷰를 보고 싶어하는 게 확실하다면 말이지.
+  하지만 아직은 페이지 네이션을 하지 않고 있다. 
+
+# 그러면 페이지네이션을 어떻게 처리하면 되는걸까?
+  좋은 소식은 장고는 너무 멋져서, 페이지네이션이 포함되어 있다는 거야.
+
+# 첫 번째 단계는 물론, 여기에 있는 페이지 인자를 가져오는 거야
+  URL에 있는 페이지 인자 말이야.
+  request.query_params 로 가져올 수 있다 쿼리를
+  request.query_params.get('page')
+  모든 딕셔너리의 get 메소드는 기본값을 지정할 수 있게 해준다.
+  page = request.query_params.get("page", 1) page를 찾을 수 없는 경우에 콤마를 사용에 1을 쓰는 것이다.
+  URL에서 쿼리를 가져오게 되면 str 이기 때문에 int()로 변경해 줘야 한다.
+  page_size를 설정해준다. 한 페이지에 나타날 수.
+  start = (page-1) * page_size
+  end = start + page_size
+  room.review_set.all()[start:end],
+
+# ImageField의 경우에는 장고에게 파일이 저장된 위치를 알려줘야 한다.
+  근데 우리 서버의 파일 시스템을 가보면, 우리가 업로드한 파일이 여기에 있는 걸 볼 수 있다.
+  사진이 업로드되는 위치를 변경하려면, config 폴더의 settings.py 에 MEDIA_ROOT = "uploads" 
+  조심해 '/'를 적을 필요없어. 그냥 폴더 이름만 작성한다.
+
+# 두 번째는, 어떻게 유저에게 이러한 파일들을 노출시킬 것인지에 관한 것이다.
+  우린 어떤 url에서 유저에게 이 파일을 노출시키고 싶을까? 
+  이걸 위해 우린 MEDIA_URL을 정의해야 한다. 너가 원하는 이름으로 해줄 수 있다.(settings.py 에 추가)
+  그리고 MEDIA_URL은 반드시 '/'로 끝나야 한다. 
+  명심해. 이건 단지 url을 위한 거야. 하지만 그럼에도 Not found(404)가 나오는데
+  장고에게 이 user-uploads를 노출시켜 달라고 말해줘야 한다.
+
+# settings.py에 있는 url을 복사-붙여넣기 대신에, settings의 MEDIA_URL 변수를 import 할 수 있다.
+   
+# 그러기 위해서 settings.py 를 임포트 하여야 하는데, 직접할 수도 있지만 그 대신,
+  장고는 from django.conf import settings라는걸 지원해준다.
+  이건 너의 settings.py에 대한 프록시인데 너무 너무 쿨하지.  
+  왜냐면, 넌 django를 위한 settings 뿐만 아니라 너만의 settings를 위해서 settings.py를 쓸 수 있다.
+  예를 들어 저기에 API 토큰을 둔다든지, 기타 설정 사항들을 추가할 수 있지.
+  하지만 방금 한 것은 개발 환경에서만 권장이 된다.
+  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
+
+# 유저가 올리는 파일을 네 코드 옆에 두도록 해서는 안된다.
+  네가 모르는 사람들이 올리는 파일에 서버 디스크 공간을 할애하고 싶지 않을 거야.
+  그건 신뢰할 수 없는 유저 입력이야. 넌 그들이 뭘 업로드할지 알 수 없어. 좋은 생각이 아니야.
+  대신 나중에 우리가 할 일은 이 파일들을 다른 서버에 넣는거야.
+  장고는 오직 파일의 url에 대해서만 알게 될 거거든.그것만.
+  그래서 파일이 장고에 접촉할 일은 없을 거야.
+  장고는 오직 파일의 url만 알게 되고, 우리의 영상과 사진 파일을 우리 서버에 두진 않을 거야.
+  AWS 서버 또는 클라우드 이미지 서버로 이동시킬 거야.
+  그들은 파일 처리, 파일 업로드, 파일 다운로드에 특화된 서버들이거든.
+  그들은 캐싱을 매우 잘 할 수 있구, 커스텀 할 수도 있어
+  파일의 보안도 되고, 그런 것들에 특화되어 있지
+  앞으로 우리는 파일 다루는 데 장고를 사용하지 않을 거야.
+
+# 이러한 이유로, 장고가 파일이 무엇인지 알기를 원하지 않기 때문에 media 모델을 URL 필드로 수정할 거야.
+  내가 말했듯이 파일을 Cloudflare에 업로드하면 파일의 URL을 줄 거고, 우린 그걸 장고에게 제공할거야.
+  데이터베이스에는 URL만 저장을 할 것이다.
+
+# from rest_framework.permissions import IsAuthenticatedOrReadOnly
+  이것은 만약 요청이 GET 요청이라면 누구나 통과할 수 있게 해준다.
+
+# from rest_framework.permissions import IsAuthenticated
+  이것은 인증이 되어야만 한다.
+
+# from django.utils import timezone
+  now = timezone.now() : 현재 날짜와  시간
+  timezone.localtime(now)
+  timezone.localtime(now).date()

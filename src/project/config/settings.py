@@ -148,4 +148,13 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom User
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"
+
+# 이미지가 업로드 되는 위치
+MEDIA_ROOT = "uploads" 
+
+# 어떤 URL 에서 유저에게 이 파일을 노출을 시킬것인지.
+MEDIA_URL = "user-uploads/"
+
+# 페이징(한 페이지에 보여줄 데이터 수)
+PAGE_SIZE = 5
