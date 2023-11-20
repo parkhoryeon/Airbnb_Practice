@@ -12,16 +12,25 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import environ
+
+# environ에게 .env파일을 읽으라고 알려준다.
+env = environ.Env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# print('⭐ BASE_DIR : ',BASE_DIR)
 
+environ.Env.read_env(os.path.join(BASE_DIR, '..', '..', '.env'))
+# print('⭐ ENV.READ_ENV : ', os.path.join(BASE_DIR, '..', '..', '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-w1yy8(dg6dtmbl(99cp@t&)5w80#lcgnvbx0$jzas%g&!1vf&h'
+# 비밀키를 프로덕션 환경에서는 은밀하게 사용 하세요.
+SECRET_KEY = env("SECRET_KEY")
+# print('⭐ SECRET_KEY : ', env("SECRET_KEY"))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -33,6 +42,7 @@ ALLOWED_HOSTS = []
 
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "rest_framework.authtoken", 
 ]
 
 CUSTOM_APPS = [
@@ -158,3 +168,13 @@ MEDIA_URL = "user-uploads/"
 
 # 페이징(한 페이지에 보여줄 데이터 수)
 PAGE_SIZE = 5
+
+# 우리만의 인증 로직(JWT X, TOKEN X)
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',  #  Default(기본 제공되는 인증) 브라우저에서는 동작하지만, Postman에서는 쿠키가 없어서 안될것이다.
+        'config.authentication.TrustMeBroAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'config.authentication.JWTAuthentication',
+    ]
+}

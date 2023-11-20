@@ -3,5 +3,5 @@ from . import views
 
 
 urlpatterns = [
-    path("photos/<int:pk>", views.PhotoDetail.as_view()),
+    path("photos/<int:pk>", views.PhotoDetail.as_view()),  # Photo 조회 / 삭제
 ]

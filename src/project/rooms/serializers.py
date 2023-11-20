@@ -17,7 +17,7 @@ class AmenitySerializer(serializers.ModelSerializer):
         )
 
 
-""" 많은 데이터를 포함하는 serializer """
+""" Room의 상세 정보 """
 class RoomDetailSerializer(serializers.ModelSerializer):
 
     # 'read_only = True'이기 때문에 validation이 통과가 되기 때문에
@@ -62,7 +62,7 @@ class RoomDetailSerializer(serializers.ModelSerializer):
     #     return
 
 
-""" 많은 데이터를 포함하지 않은 serializer """
+""" Room 최소 정보 """
 class RoomListSerializer(serializers.ModelSerializer):
 
     rating = serializers.SerializerMethodField()

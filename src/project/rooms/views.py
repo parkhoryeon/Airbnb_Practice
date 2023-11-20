@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .serializers import AmenitySerializer, RoomListSerializer, RoomDetailSerializer
 from reviews.serializers import ReviewSerializer
 from medias.serializers import PhotoSerializer
-from bookings.serializers import PublicBookingSerializer
+from bookings.serializers import PublicBookingSerializer, CreateRoomBookingSerializer
 from .models import Amenity, Room
 from bookings.models import Booking
 from categories.models import Category
@@ -228,7 +228,7 @@ class RoomReviews(APIView):
         except ValueError:
             page = 1
         page_size = settings.PAGE_SIZE
-        print(settings.PAGE_SIZE)
+        # print(settings.PAGE_SIZE)
         start = (page-1) * page_size
         end = start + page_size
         room = self.get_object(pk)
@@ -262,7 +262,7 @@ class RoomAmenities(APIView):
             page = int(request.query_params.get("page"))
         except ValueError:
             page = 1
-        page_size = 3
+        page_size = settings.PAGE_SIZE
         start = (page-1) * page_size
         end = start + page_size
         room = self.get_object(pk)
@@ -318,3 +318,17 @@ class RoomBookings(APIView):
         )
         serializer = PublicBookingSerializer(bookings, many=True)
         return Response(serializer.data)
+
+    def post(self, request, pk):
+        room = self.get_object(pk)
+        serializer = CreateRoomBookingSerializer(data=request.data)
+        if serializer.is_valid():
+            booking = serializer.save(
+                room=room,
+                user=request.user,
+                kind=Booking.BookingKindChoices.ROOM,
+            )
+            serializer = PublicBookingSerializer(booking)
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)

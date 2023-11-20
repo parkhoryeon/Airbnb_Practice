@@ -3,13 +3,13 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.CategoryViewSet.as_view(
+    path('', views.CategoryViewSet.as_view(          # Categories 조회 / Category 생성
         {
             'get': 'list',
             'post': 'create',
         }
     )),
-    path('<int:pk>', views.CategoryViewSet.as_view(
+    path('<int:pk>', views.CategoryViewSet.as_view(  # Category 조회/수정/삭제
         {
             'get': 'retrieve',
             'put': 'partial_update',
