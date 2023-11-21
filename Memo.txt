@@ -506,3 +506,16 @@ GET PUT DELETE /experiences/1/bookings/2
 
 # setUp method는 다른 모든 test들이 실행되기 전에 실행될것이다.
   바로 이 setUp이 데이터베이스를 설정(set up)할 수 있는 곳이지.
+
+
+
+
+
+
+# FRONT-END SETUP
+
+# React JS, Create React App, TypeScript, TanStack Query, chakra UI
+
+# chakra는 리액트JS를 위한 컴포넌트 라이브러리인데, 앞으로 보게 될테지만 많은 작업을 절약시켜 준다.
+
+# 또 다른 프레임워크인 Tailwind CSS도 좋아하지만, 그걸 사용할 땐 수동으로 모든 것들을 구현해야해.
