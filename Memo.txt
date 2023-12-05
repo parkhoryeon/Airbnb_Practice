@@ -519,3 +519,30 @@ GET PUT DELETE /experiences/1/bookings/2
 # chakra는 리액트JS를 위한 컴포넌트 라이브러리인데, 앞으로 보게 될테지만 많은 작업을 절약시켜 준다.
 
 # 또 다른 프레임워크인 Tailwind CSS도 좋아하지만, 그걸 사용할 땐 수동으로 모든 것들을 구현해야해.
+
+# npx create-react-app airbnb-clone-frontend --temlate=typescript
+  TypeScript를 사용하는 React 애플리케이션을 빠르게 설정하고 시작할 수 있는 초기 프로젝트를 생성.
+
+# 추가 설치: chakral. react-router-dom
+
+# CORS 에러란, 기본적으로 여러분의 서버가 사용자들에게 서버로부터 무언가를 fetch하는 것을 허용하지 않는다는
+  의미야.
+
+# 왜냐면 서버가 fetch하려는 사람들을 서버로부터 차단하고 있거든, 우리들은 Google로부터 fetch를 할 수 없어.
+  Google은 우리가 Google 서버로부터 fetch하는 걸 허용하지 않으니까!
+  그런 것처럼, 우리 Airbnb 클론코딩 서버도 자기 자신으로부터 fetch하는 것을 허용하지 않고 있어
+  그러니까 우리는, 우리 서버가 몇몇 URL을 fetch하는 걸 허용하도록 해야한다.
+
+# 그러려면 먼저, django-cors-headers를 설치해야 한다.
+  cors-headers는, 특정 도메인에서 여러분의 서버에서 브라우저로 fetch할 수 있는 사람'을 지정할 수 있게 해준다.
+  일단은, 로컬 호스트 도메인만 fetch 할 수 있도록 허용시켜 보자.
+
+# 만약 애플리케이션을 배포하고 .com이라는 도메인을 구입했다면, 그 도메인을 허용된 서버에 집어넣어야겠지?
+  그게 바로 지금 우리가 할 일이야.
+
+# pip install django-cors-headers
+
+# config 폴더의 settings.py로 이동해서 INSTALLED_APPS 에 "corsheadrs" 를 추가한다.
+  MIDDLEWARE에도 corsheaders를 추가해야 한다.
+  "corsheaders.middleware.CorsMiddleware",
+  CORS_ALLOWED_ORIGINS = ["http://localhost:3000/"]
