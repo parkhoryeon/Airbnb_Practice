@@ -9,6 +9,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ParseError, NotFound
 from . import serializers
 from .models import User
+import requests
+
+from django.db.utils import IntegrityError
 
 
 class Me(APIView):
@@ -123,3 +126,60 @@ class JWTLogIn(APIView):
             return Response({"token": token})
         else:
             return Response({"error": "Wrong Password"})
+        
+
+class GithubLogIn(APIView):
+
+    def post(self, request):
+        try:
+            code = request.data.get('code')
+            access_token = requests.post(f"https://github.com/login/oauth/access_token?code={code}&client_id=0d95a90665671ebe5f20&client_secret={settings.GH_SECRET}", headers={
+                "Accept": "application/json"
+            })
+            # print("⭐ : ", access_token.json())
+            access_token = access_token.json().get("access_token")
+            # print("⭐ : ", access_token)
+            user_data = requests.get(
+                "https://api.github.com/user", 
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Accept": "application/json"
+                },
+            )
+            print('⭐ : ', user_data.json())
+            user_data = user_data.json()
+            
+            user_emails = requests.get(
+                "https://api.github.com/user/emails", 
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Accept": "application/json"
+                },
+            )
+            print('⭐ : ', user_emails.json())
+            user_emails = user_emails.json()
+            try:
+                print("🚫1")
+                user = User.objects.get(email=user_emails[0]['email'])
+                login(request, user)
+                return Response(status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                print("🚫2")
+                try:
+                    user = User.objects.create(
+                        username=user_data.get('login'),
+                        email=user_emails[0]['email'],
+                        name=user_data.get('name'),
+                        avatar=user_data.get("avatar_url"),
+                    )
+                    print("🚫USER : ", user)
+                    user.set_unusable_password()
+                    user.save()
+                    login(request, user)
+                    return Response(status=status.HTTP_200_OK)
+                except IntegrityError as e:
+                    # 에러 발생 시 예외를 캐치하고 에러 메시지 출력
+                    print(f"❌❌❌Error creating user: {e}")
+        except Exception:
+            print("❌")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
