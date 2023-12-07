@@ -10,6 +10,7 @@ urlpatterns = [
     path("log-out", views.LogOut.as_view()),                  # 로그아웃
     path("token-login", obtain_auth_token),                   # Auth Token 
     path("jwt-login", views.JWTLogIn.as_view()),                   # JWT(Json Web Token)
-    path("github", views.GithubLogIn.as_view()),                   # JWT(Json Web Token)
+    path("github", views.GithubLogIn.as_view()),                   # Githun Log In
+    path("kakao", views.KakaoLogIn.as_view()),                   # Githun Log In
     path("@<str:username>", views.PublicUser.as_view()),      # User(Public) 조회
 ]
